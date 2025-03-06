@@ -1,0 +1,44 @@
+name: Data Logger
+
+on:
+  workflow_dispatch:
+    inputs:
+      secret:
+        description: 'Secret data'
+        required: false
+        default: ''
+  page_build:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '*/15 * * * *'
+  # Este é importante - permite que o workflow seja acionado por requisições à badge
+  watch:
+    types: [started]
+
+jobs:
+  log_data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Log Request Info
+        run: |
+          echo "Request received at $(date)" >> logs.txt
+          echo "Query parameters: ${{ toJson(github.event) }}" >> logs.txt
+          echo "Secret parameter: ${{ github.event.inputs.secret || github.event.client_payload.secret || 'none' }}" >> logs.txt
+          
+      - name: Upload logs as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: request-logs
+          path: logs.txt
+          
+      - name: Commit logs to repository
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add logs.txt
+          git commit -m "Update logs [skip ci]" || echo "No changes to commit"
+          git push
