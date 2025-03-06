@@ -1,31 +1,15 @@
-name: Data Logger
+name: Simple Logger
 
 on:
   workflow_dispatch:
-  page_build:
   push:
     branches: [ main ]
-  schedule:
-    - cron: '*/15 * * * *'
 
 jobs:
-  log_data:
+  simple_log:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        
-      - name: Log Request Info
+      - name: Log event
         run: |
-          echo "Request received at $(date)" >> logs.txt
-          echo "Query parameters: ${{ toJson(github.event) }}" >> logs.txt
-          
-      - name: Commit logs to repository
-        run: |
-          git config --global user.name 'GitHub Actions'
-          git config --global user.email 'actions@github.com'
-          git add logs.txt
-          git commit -m "Update logs [skip ci]" || echo "No changes to commit"
-          git push
+          echo "Event triggered at $(date)"
+          echo "Event data: ${{ toJson(github) }}"
