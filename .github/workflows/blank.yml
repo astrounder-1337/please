@@ -1,15 +1,11 @@
-name: Simple Logger
-
+name: Capture Copilot Data
 on:
-  workflow_dispatch:
-  push:
-    branches: [ main ]
+  repository_dispatch:
+    types: [data-capture]
 
 jobs:
-  simple_log:
+  log_request:
     runs-on: ubuntu-latest
     steps:
-      - name: Log event
-        run: |
-          echo "Event triggered at $(date)"
-          echo "Event data: ${{ toJson(github) }}"
+      - name: Print event payload
+        run: echo "Received payload: ${{ toJson(github.event.client_payload) }}"
