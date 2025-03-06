@@ -8,4 +8,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print event payload
-        run: echo "Received payload: ${{ toJson(github.event.client_payload) }}"
+        run: echo "Received payload: ${{ toJSON(github.event.client_payload) }}"
