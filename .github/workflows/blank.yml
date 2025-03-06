@@ -1,11 +1,13 @@
 name: Capture Copilot Data
 on:
+  workflow_dispatch:
+  push:
   repository_dispatch:
-    types: [data-capture]
+    types: [copilot-badge]
 
 jobs:
-  log_request:
+  log_copilot_request:
     runs-on: ubuntu-latest
     steps:
-      - name: Print event payload
-        run: echo "Received payload: ${{ toJSON(github.event.client_payload) }}"
+      - name: Log GET Request
+        run: echo "Copilot acessou o badge em $(date)"
